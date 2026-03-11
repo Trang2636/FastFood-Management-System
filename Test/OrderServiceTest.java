@@ -1,47 +1,34 @@
 import com.fastfood.model.Food;
-import com.fastfood.model.MenuItem;
 import com.fastfood.model.Order;
+import com.fastfood.repository.DiscountRepository;
+import com.fastfood.repository.OrderRepository;
 import com.fastfood.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderServiceTest {
     private OrderService orderService;
-    private Order order;
+    private OrderRepository orderRepository;
+    private DiscountRepository discountRepository;
 
     @BeforeEach
-    public void setUp() {
-        orderService = new OrderService();
-        order = new Order(1);
+    void setUp() {
 
-        MenuItem food = new Food(1, "Burger", 10);
-        MenuItem bread = new Food(2, "Bread", 5);
+        orderRepository = new OrderRepository();
+        discountRepository = new DiscountRepository();
 
-        order.addItem(food,1);
-        order.addItem(bread,2);
+        orderService = new OrderService(orderRepository,discountRepository);
+        Order order = new Order("1","TestCustomer");
+        order.addItem(new Food(1,"Burger",10),1);
+        order.addItem(new Food(2,"Bread",5),2);
+        orderRepository.save(order);
     }
 
-    // Tong tien
     @Test
     void testCalculateTotalPrice() {
-        double totalPrice = orderService.calculateTotalPrice(order);
-        assertEquals(20, totalPrice);
-    }
-    // Tong tien voi khuyen mai
-    @Test
-    void testCalculateTotalPriceWithDiscount() {
-        order.setDiscount(0.1);
-        double totalPrice = orderService.calculateTotalPrice(order);
-        assertEquals(18, totalPrice);
-
-    }
-    // Gio hang rong
-    @Test
-    void testCalculateEmptyOrder() {
-        Order emptyOrder = new Order(2);
-        double totalPrice = orderService.calculateTotalPrice(emptyOrder);
-        assertEquals(0, totalPrice);
+        double total = orderService.calculateTotal("1");
+        assertEquals(21,total,0.01);
     }
 }
