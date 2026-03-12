@@ -7,7 +7,7 @@ public class Dessert extends MenuItem {
     }
 
     @Override
-    public double caculatePrice() {
+    public double calculatePrice() {
         // Mon trang mieng tinh gia goc, khong tinh thue
         return getPrice();
     }
@@ -16,7 +16,7 @@ public class Dessert extends MenuItem {
     public String toString() {
         return super.toString() +
                 " | Loai: Trang mieng" +
-                " | Gia tinh: " + String.format("%.2f", caculatePrice());
+                " | Gia tinh: " + String.format("%.2f", calculatePrice());
     }
 }
 

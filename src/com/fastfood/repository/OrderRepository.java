@@ -1,6 +1,6 @@
 package com.fastfood.repository;
 
-import model.Order;
+import com.fastfood.model.Order;
 
 import java.util.HashMap;
 import java.util.Map;

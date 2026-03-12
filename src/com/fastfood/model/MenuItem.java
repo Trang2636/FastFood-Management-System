@@ -36,7 +36,7 @@ public abstract class MenuItem {
     }
 
     // phuong thuc tinh gia(da hinh)
-    public abstract double caculatePrice();
+    public abstract double calculatePrice();
 
     @Override
     public String toString() {

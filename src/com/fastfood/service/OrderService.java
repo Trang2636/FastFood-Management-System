@@ -28,7 +28,7 @@ public class OrderService {
             throw new IllegalArgumentException("Order cannot be null");
         }
 
-        if (order.getId() == null || order.getId().trim().isEmpty()) {
+        if (order.getOrderId() == null || order.getOrderId().trim().isEmpty()) {
             throw new IllegalArgumentException("Order id is required");
         }
 
@@ -54,7 +54,7 @@ public class OrderService {
                 .orElseThrow(() ->
                         new InvalidOrderIdException("Order not found"));
 
-        order.addItem(item);
+        order.addItem(item.getMenuItem(), item.getQuantity());
     }
 
     // Áp dụng mã giảm giá
@@ -73,10 +73,10 @@ public class OrderService {
                 .orElseThrow(() ->
                         new InvalidOrderIdException("Order ID not found"));
 
-        Discount discount = discountRepository
-                .getDiscountByCode(code)
-                .orElseThrow(() ->
-                        new InvalidDiscountException("Discount code invalid"));
+        Discount discount = discountRepository.getDiscountByCode(code);
+        if(discount == null){
+            throw new InvalidDiscountException("Discount code invalid");
+        }
 
         // kiểm tra hạn sử dụng
         if (discount.getExpiryDate().isBefore(LocalDate.now())) {
@@ -86,7 +86,7 @@ public class OrderService {
         if (discount.getPercentage() <= 0 || discount.getPercentage() > 100) {
             throw new InvalidDiscountException("Invalid discount percentage");
         }
-        order.setDiscount(discount.getPercentage());
+        order.setDiscountAmount(discount.getPercentage());
     }
 
     // Tính tổng tiền đơn hàng

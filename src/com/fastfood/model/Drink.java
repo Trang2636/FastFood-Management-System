@@ -18,7 +18,7 @@ public class Drink extends MenuItem {
     }
 
     @Override
-    public double caculatePrice() {
+    public double calculatePrice() {
         // Tinh gia theo size: S giu nguyen, M tang 20%, L tang 50%
         switch (size.toUpperCase()) {
             case "M":
@@ -34,6 +34,6 @@ public class Drink extends MenuItem {
     public String toString() {
         return super.toString() +
                 " | Size: " + size +
-                " | Gia tinh: " + String.format("%.2f", caculatePrice());
+                " | Gia tinh: " + String.format("%.2f", calculatePrice());
     }
 }

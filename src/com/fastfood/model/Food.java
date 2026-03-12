@@ -6,7 +6,7 @@ public class Food extends MenuItem {
     }
 
     @Override
-    public double caculatePrice() {
+    public double calculatePrice() {
         return getPrice()* 1.05; //them 5% thue
     }
 }
