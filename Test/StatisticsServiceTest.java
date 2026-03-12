@@ -10,11 +10,11 @@ public class StatisticsServiceTest {
     @Test
     void testDailyRevenue() {
         Order order1 = new Order("1","A");
-        order1.addItem(new Food(1,"Burger",10),2);
+        order1.addItem(new Food(1,"Burger",10,10),2);
         order1.setStatus(OrderStatus.PAID);
 
         Order order2 = new Order("2","B");
-        order2.addItem(new Food(1,"Burger",10),1);
+        order2.addItem(new Food(1,"Burger",10,10),1);
         order2.setStatus(OrderStatus.PAID);
         List<Order> orders = List.of(order1,order2);
         StatisticsService statisticsService = new StatisticsService(orders);
@@ -25,7 +25,7 @@ public class StatisticsServiceTest {
     @Test
     void testMonthlyRevenue() {
         Order order = new Order("1","A");
-        order.addItem(new Food(1,"Burger",10),1);
+        order.addItem(new Food(1,"Burger",10,10),1);
         order.setStatus(OrderStatus.PAID);
         StatisticsService statisticsService = new StatisticsService(List.of(order));
         double revenue = statisticsService.getMonthlyRevenue(

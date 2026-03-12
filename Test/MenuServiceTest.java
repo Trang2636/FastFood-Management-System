@@ -19,9 +19,9 @@ public class MenuServiceTest {
         repository = new MenuRepository();
         menuService = new MenuService(repository);
 
-        repository.addMenuItem(new Food(1,"Burger",10));
-        repository.addMenuItem(new Food(2,"Bread",5));
-        repository.addMenuItem(new Food(3,"Coke",3));
+        repository.addMenuItem(new Food(1,"Burger",10,10));
+        repository.addMenuItem(new Food(2,"Bread",5,10));
+        repository.addMenuItem(new Food(3,"Coke",3,10));
     }
 
     @Test

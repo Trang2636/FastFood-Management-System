@@ -2,8 +2,8 @@ package com.fastfood.model;
 
 public class Dessert extends MenuItem {
 
-    public Dessert(int id, String name, double price) {
-        super(id, name, price);
+    public Dessert(int id, String name, double price,  int stock) {
+        super(id, name, price, stock);
     }
 
     @Override

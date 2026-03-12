@@ -16,8 +16,8 @@ public class OrderServiceTest {
         discountRepository = new DiscountRepository();
         orderService = new OrderService(orderRepository,discountRepository);
         Order order = new Order("1","TestCustomer");
-        order.addItem(new Food(1,"Burger",10),1);
-        order.addItem(new Food(2,"Bread",5),2);
+        order.addItem(new Food(1,"Burger",10,10),1);
+        order.addItem(new Food(2,"Bread",5,10),2);
         orderRepository.save(order);
     }
 

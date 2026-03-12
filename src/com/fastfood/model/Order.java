@@ -55,11 +55,10 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "orderId='" + orderId + '\'' +
-                ", customerName='" + customerName + '\'' +
-                ", status=" + status +
-                ", total=" + getTotalAfterDiscount() +
-                '}';
+        return "\n===== ĐƠN HÀNG =====" +
+                "\nMã đơn hàng : " + orderId +
+                "\nKhách hàng  : " + customerName +
+                "\nTrạng thái  : " + status +
+                "\nTổng tiền   : " + String.format("%.2f", getTotalAfterDiscount());
     }
 }

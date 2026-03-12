@@ -1,8 +1,10 @@
 package com.fastfood.service;
 
+import com.fastfood.exception.InsufficientStockException;
 import com.fastfood.exception.InvalidDiscountException;
 import com.fastfood.exception.InvalidOrderIdException;
 import com.fastfood.model.Discount;
+import com.fastfood.model.MenuItem;
 import com.fastfood.model.Order;
 import com.fastfood.model.OrderItem;
 import com.fastfood.repository.DiscountRepository;
@@ -24,6 +26,7 @@ public class OrderService {
 
     // Tạo đơn hàng
     public void createOrder(Order order) {
+
         if (order == null) {
             throw new IllegalArgumentException("Order cannot be null");
         }
@@ -37,6 +40,7 @@ public class OrderService {
 
     // Thêm món vào đơn hàng
     public void addItem(String orderId, OrderItem item) {
+
         if (orderId == null || orderId.trim().isEmpty()) {
             throw new IllegalArgumentException("Order id is required");
         }
@@ -54,7 +58,18 @@ public class OrderService {
                 .orElseThrow(() ->
                         new InvalidOrderIdException("Order not found"));
 
-        order.addItem(item.getMenuItem(), item.getQuantity());
+        MenuItem menuItem = item.getMenuItem();
+
+        // Kiểm tra tồn kho
+        if (menuItem.getStock() < item.getQuantity()) {
+            throw new InsufficientStockException("Không đủ hàng trong kho");
+        }
+
+        // Trừ tồn kho
+        menuItem.setStock(menuItem.getStock() - item.getQuantity());
+
+        // Thêm món vào order
+        order.addItem(menuItem, item.getQuantity());
     }
 
     // Áp dụng mã giảm giá
@@ -74,11 +89,12 @@ public class OrderService {
                         new InvalidOrderIdException("Order ID not found"));
 
         Discount discount = discountRepository.getDiscountByCode(code);
-        if(discount == null){
+
+        if (discount == null) {
             throw new InvalidDiscountException("Discount code invalid");
         }
 
-        // kiểm tra hạn sử dụng
+        // Kiểm tra hạn sử dụng
         if (discount.getExpiryDate().isBefore(LocalDate.now())) {
             throw new InvalidDiscountException("Discount expired");
         }
@@ -86,11 +102,18 @@ public class OrderService {
         if (discount.getPercentage() <= 0 || discount.getPercentage() > 100) {
             throw new InvalidDiscountException("Invalid discount percentage");
         }
-        order.setDiscountAmount(discount.getPercentage());
+
+        // Tính tiền giảm giá đúng
+        double discountAmount =
+                order.calculateTotal() * discount.getPercentage() / 100;
+
+        order.setDiscountAmount(discountAmount);
+        order.setDiscountCode(code);
     }
 
     // Tính tổng tiền đơn hàng
     public double calculateTotal(String orderId) {
+
         if (orderId == null || orderId.trim().isEmpty()) {
             throw new IllegalArgumentException("Order id is required");
         }
@@ -104,6 +127,6 @@ public class OrderService {
             throw new IllegalStateException("Order has no items");
         }
 
-        return order.calculateTotal();
+        return order.getTotalAfterDiscount();
     }
 }

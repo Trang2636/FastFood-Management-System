@@ -4,8 +4,8 @@ public class Drink extends MenuItem {
     // Kich thuoc: S, M, L
     private String size;
 
-    public Drink(int id, String name, double price, String size) {
-        super(id, name, price);
+    public Drink(int id, String name, double price,int stock , String size) {
+        super(id, name, price, stock);
         this.size = size;
     }
 

@@ -125,6 +125,9 @@ public class Main {
         System.out.print("Giá: ");
         double price = Double.parseDouble(sc.nextLine());
 
+        System.out.print("Tồn kho: ");
+        int stock = Integer.parseInt(sc.nextLine());
+
         System.out.println("Loại món:");
         System.out.println("1. Food");
         System.out.println("2. Drink");
@@ -137,17 +140,17 @@ public class Main {
         switch (type) {
 
             case 1:
-                item = new Food(id, name, price);
+                item = new Food(id, name, price, stock);
                 break;
 
             case 2:
                 System.out.print("Size (S/M/L): ");
                 String size = sc.nextLine();
-                item = new Drink(id, name, price, size);
+                item = new Drink(id, name, price, stock, size);
                 break;
 
             case 3:
-                item = new Dessert(id, name, price);
+                item = new Dessert(id, name, price, stock);
                 break;
         }
 
