@@ -1,5 +1,8 @@
 package com.fastfood;
 
+import com.fastfood.exception.InsufficientStockException;
+import com.fastfood.exception.InvalidDiscountException;
+import com.fastfood.exception.InvalidOrderIdException;
 import com.fastfood.model.*;
 import com.fastfood.repository.*;
 import com.fastfood.service.*;
@@ -180,47 +183,64 @@ public class Main {
     // ================= ORDER =================
 
     private static void createOrder(OrderService service) {
-
         System.out.print("Nhập order id: ");
         String id = sc.nextLine();
-
         System.out.print("Tên khách: ");
         String name = sc.nextLine();
 
-        Order order = new Order(id, name);
-
-        service.createOrder(order);
-
-        System.out.println("Tạo đơn hàng thành công");
+        try {
+            Order order = new Order(id, name);
+            service.createOrder(order);
+            System.out.println("Tạo đơn hàng thành công");
+        } catch (Exception e) {
+            System.err.println("Lỗi: " + e.getMessage());
+        }
     }
 
     private static void addItemToOrder(OrderService service, MenuRepository repo) {
+        try {
+            System.out.print("Nhập order id: ");
+            String orderId = sc.nextLine();
+            System.out.print("Nhập id món: ");
+            int itemId = Integer.parseInt(sc.nextLine());
+            System.out.print("Số lượng: ");
+            int quantity = Integer.parseInt(sc.nextLine());
 
+            MenuItem item = repo.getAllMenuItems().stream()
+                    .filter(m -> m.getId() == itemId)
+                    .findFirst()
+                    .orElse(null);
+
+            if (item == null) {
+                System.err.println("Không tìm thấy món!");
+                return;
+            }
+
+            OrderItem orderItem = new OrderItem(item, quantity);
+
+            // ĐÂY LÀ NƠI BẮT LỖI HẾT HÀNG HOẶC SAI ID
+            service.addItem(orderId, orderItem);
+            System.out.println("Đã thêm món vào đơn thành công");
+
+        } catch (InsufficientStockException | InvalidOrderIdException e) {
+            System.err.println(">>> THÔNG BÁO LỖI: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Lỗi: Dữ liệu nhập vào phải là số!");
+        }
+    }
+
+    private static void applyDiscount(OrderService service) {
         System.out.print("Nhập order id: ");
         String orderId = sc.nextLine();
+        System.out.print("Nhập mã giảm giá: ");
+        String code = sc.nextLine();
 
-        System.out.print("Nhập id món: ");
-        int itemId = Integer.parseInt(sc.nextLine());
-
-        System.out.print("Số lượng: ");
-        int quantity = Integer.parseInt(sc.nextLine());
-
-        MenuItem item = repo.getAllMenuItems()
-                .stream()
-                .filter(m -> m.getId() == itemId)
-                .findFirst()
-                .orElse(null);
-
-        if (item == null) {
-            System.out.println("Không tìm thấy món");
-            return;
+        try {
+            service.applyDiscount(orderId, code);
+            System.out.println("Áp dụng discount thành công");
+        } catch (InvalidDiscountException | InvalidOrderIdException e) {
+            System.err.println(">>> THÔNG BÁO LỖI: " + e.getMessage());
         }
-
-        OrderItem orderItem = new OrderItem(item, quantity);
-
-        service.addItem(orderId, orderItem);
-
-        System.out.println("Đã thêm món vào đơn");
     }
 
     private static void showOrders(OrderRepository repo) {
@@ -233,26 +253,7 @@ public class Main {
         repo.getAll().values().forEach(System.out::println);
     }
 
-    private static void applyDiscount(OrderService service) {
 
-        System.out.print("Nhập order id: ");
-        String orderId = sc.nextLine();
-
-        System.out.print("Nhập mã giảm giá: ");
-        String code = sc.nextLine();
-
-        try {
-
-            service.applyDiscount(orderId, code);
-
-            System.out.println("Áp dụng discount thành công");
-
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
-
-        }
-    }
 
     // ================= STATISTICS =================
 
