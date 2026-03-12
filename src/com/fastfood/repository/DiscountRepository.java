@@ -2,43 +2,57 @@ package com.fastfood.repository;
 
 import com.fastfood.model.Discount;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiscountRepository {
+
+    // Danh sách lưu trữ các mã giảm giá
     private List<Discount> discountList = new ArrayList<>();
 
-    // them ma giam gia
+    // Constructor: khởi tạo một số mã giảm giá mẫu để test
+    public DiscountRepository() {
+        discountList.add(new Discount("FF10", 10, LocalDate.now().plusDays(10)));
+        discountList.add(new Discount("STUDENT15", 15, LocalDate.now().plusDays(5)));
+        discountList.add(new Discount("VIP30", 30, LocalDate.now().plusDays(30)));
+        discountList.add(new Discount("OLD5", 5, LocalDate.now().minusDays(1))); // mã đã hết hạn
+    }
+
+    // Thêm mã giảm giá mới
     public void addDiscount(Discount discount) {
         discountList.add(discount);
     }
 
-    // lay toan bo ma giam gia
+    // Lấy toàn bộ danh sách mã giảm giá
     public List<Discount> getAllDiscounts() {
         return discountList;
     }
 
-    // lay ma giam gia theo code
+    // Tìm mã giảm giá theo code
     public Discount getDiscountByCode(String code) {
         return discountList.stream()
-                .filter((discount) -> discount.getCode().equalsIgnoreCase(code))
+                .filter(discount -> discount.getCode().equalsIgnoreCase(code))
                 .findFirst()
                 .orElse(null);
     }
 
-    // xoa ma giam gia theo code
+    // Xóa mã giảm giá theo code
     public void removeDiscount(String code) {
-        discountList.removeIf((discount) -> discount.getCode().equalsIgnoreCase(code));
+        discountList.removeIf(discount -> discount.getCode().equalsIgnoreCase(code));
     }
 
-    // lay danh sach ma giam gia con hieu luc
+    // Lấy danh sách các mã giảm giá còn hiệu lực
     public List<Discount> getValidDiscounts() {
+
         List<Discount> validDiscounts = new ArrayList<>();
+
         for (Discount discount : discountList) {
             if (discount.isValid()) {
                 validDiscounts.add(discount);
             }
         }
+
         return validDiscounts;
     }
 }
